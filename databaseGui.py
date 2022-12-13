@@ -11,6 +11,15 @@ def sql_connect():
     )
     return conn
 
+def clear_entry():
+    f_name.delete(0, END)
+    l_name.delete(0, END)
+    address.delete(0, END)
+    city.delete(0, END)
+    state.delete(0, END)
+    zipcode.delete(0, END)
+    user_id.delete(0, END)
+
 
 def submin():
     conn = sql_connect()
@@ -59,10 +68,18 @@ def query():
 def select():
     conn = sql_connect()
     c = conn.cursor()
-    c.execute('SELECT * FROM address WHERE user_id = ' +  delete_box.get())
+    c.execute('SELECT * FROM address WHERE user_id = ' +  user_id.get())
     records = c.fetchall()
+    f_name.delete(0, END)
+    l_name.delete(0, END)
+    address.delete(0, END)
+    city.delete(0, END)
+    state.delete(0, END)
+    zipcode.delete(0, END)
+
     f_name.insert(0,records[0][0])
     l_name.insert(0,records[0][1])
+
     address.insert(0,records[0][2])
     city.insert(0,records[0][3])
     state.insert(0,records[0][4])
@@ -74,19 +91,12 @@ def select():
 def update():
     conn = sql_connect()
     c = conn.cursor()
-
-# sql = "UPDATE customers SET address = %s WHERE address = %s"
-# val = ("Valley 345", "Canyon 123")
-# mycursor.execute(sql, val)
-
-    sqlStuff = "UPDATE address SET (f_name, l_name, address, city, state, zipcode) VALUES (%s, %s, %s, %s, %s, %s)"
-    record = (f_name.get(), l_name.get(), address.get(), city.get(), state.get(), zipcode.get())
+    sqlStuff = "UPDATE address SET f_name = %s, l_name = %s, address = %s, city = %s, state = %s, zipcode = %s WHERE user_id = + %s"
+    record = (f_name.get(), l_name.get(), address.get(), city.get(), state.get(), zipcode.get(), user_id.get())
+    print(record)
     c.execute(sqlStuff, record)
-
-
     conn.commit()
     conn.close()
-
 
 
 # window
@@ -108,8 +118,8 @@ state = Entry(window, width=30)
 state.grid(row=4, column=1, columnspan=2)
 zipcode = Entry(window, width=30)
 zipcode.grid(row=5, column=1, columnspan=2)
-delete_box = Entry(window, width=20)
-delete_box.grid(row=8, column=1)
+user_id = Entry(window, width=20)
+user_id.grid(row=8, column=1)
 
 # Label
 f_name_label = Label(window, text='First Name')
