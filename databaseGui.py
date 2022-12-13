@@ -1,6 +1,7 @@
 from tkinter import *
 import mysql.connector
 
+
 def sql_connect():
     conn = mysql.connector.connect(
     host = 'localhost',
@@ -14,16 +15,6 @@ def sql_connect():
 def submin():
     conn = sql_connect()
     c = conn.cursor()
-    # c.execute('INSERT INTO address VALUES (:f_name, :l_name, :address, :city, :state, :zipcode)',
-    #     {
-    #         'f_name': f_name.get(),
-    #         'l_name': l_name.get(),
-    #         'address': address.get(),
-    #         'city': city.get(),
-    #         'state': state.get(),
-    #         'zipcode': zipcode.get()
-    #     }
-    # )
     # CREATE TABLE address (f_name VARCHAR(255), l_name VARCHAR(255), address VARCHAR(255), city VARCHAR(255), state VARCHAR(255), zipcode VARCHAR(255), user_id INTEGER AUTO_INCREMENT PRIMARY key)
     if f_name.get():
         sqlStuff = "INSERT INTO address (f_name, l_name, address, city, state, zipcode) VALUES (%s, %s, %s, %s, %s, %s)"
@@ -40,12 +31,14 @@ def submin():
         state.delete(0, END)
         zipcode.delete(0, END)
 
+
 def delete():
     conn = sql_connect()
     c = conn.cursor()
     c.execute('DELETE FROM address WHERE user_id = ' +  delete_box.get())
     conn.commit()
     conn.close()
+
 
 def query():
     conn = sql_connect()
@@ -58,7 +51,39 @@ def query():
         print_records += str(record[0]) +' '+ str(record[1]) + '    ' + '\t' +  str(record[6])+ '\n'
 
     query_label = Label(window, text=print_records)
-    query_label.grid(row=10, column=0, columnspan=3)
+    query_label.grid(row=12, column=0, columnspan=3)
+    conn.commit()
+    conn.close()
+
+
+def select():
+    conn = sql_connect()
+    c = conn.cursor()
+    c.execute('SELECT * FROM address WHERE user_id = ' +  delete_box.get())
+    records = c.fetchall()
+    f_name.insert(0,records[0][0])
+    l_name.insert(0,records[0][1])
+    address.insert(0,records[0][2])
+    city.insert(0,records[0][3])
+    state.insert(0,records[0][4])
+    zipcode.insert(0,records[0][5])
+    conn.commit()
+    conn.close()
+
+
+def update():
+    conn = sql_connect()
+    c = conn.cursor()
+
+# sql = "UPDATE customers SET address = %s WHERE address = %s"
+# val = ("Valley 345", "Canyon 123")
+# mycursor.execute(sql, val)
+
+    sqlStuff = "UPDATE address SET (f_name, l_name, address, city, state, zipcode) VALUES (%s, %s, %s, %s, %s, %s)"
+    record = (f_name.get(), l_name.get(), address.get(), city.get(), state.get(), zipcode.get())
+    c.execute(sqlStuff, record)
+
+
     conn.commit()
     conn.close()
 
@@ -86,8 +111,6 @@ zipcode.grid(row=5, column=1, columnspan=2)
 delete_box = Entry(window, width=20)
 delete_box.grid(row=8, column=1)
 
-
-
 # Label
 f_name_label = Label(window, text='First Name')
 f_name_label.grid(row=0, column=0)
@@ -104,17 +127,16 @@ zipcode_label.grid(row=5, column=0)
 delete_label = Label(window, text='Id Number')
 delete_label.grid(row=8, column=0)
 
-
-
 # Button
 submit_btn = Button(window, text='Add Record', command=submin)
 submit_btn.grid(row=6, column=0, columnspan=3, padx=10, pady=10, ipadx=100)
 query_btn = Button(window, text='Query', command=query)
 query_btn.grid(row=7, column=0, columnspan=3, padx=10, pady=10, ipadx=116)
 delete_btn = Button(window, text='Delete', command=delete)
-delete_btn.grid(row=8, column=2, padx=10, pady=10, ipadx=5)
-
-sql_connect()
-
+delete_btn.grid(row=9, column=0, padx=2, pady=2, ipadx=10)
+selete_btn = Button(window, text='Select', command=select)
+selete_btn.grid(row=9, column=1, padx=2, pady=2, ipadx=10)
+update_btn = Button(window, text='Update', command=update)
+update_btn.grid(row=9, column=2, padx=2, pady=2, ipadx=10)
 
 window.mainloop()
