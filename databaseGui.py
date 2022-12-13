@@ -41,8 +41,11 @@ def submin():
         zipcode.delete(0, END)
 
 def delete():
-    pass
-
+    conn = sql_connect()
+    c = conn.cursor()
+    c.execute('DELETE FROM address WHERE user_id = ' +  delete_box.get())
+    conn.commit()
+    conn.close()
 
 def query():
     conn = sql_connect()
@@ -52,7 +55,7 @@ def query():
     print(records)
     print_records = ''
     for record in records:
-        print_records += str(record[0]) +' '+ str(record[1]) + ' ' + '\t' +  str(record[6])+ '\n'
+        print_records += str(record[0]) +' '+ str(record[1]) + '    ' + '\t' +  str(record[6])+ '\n'
 
     query_label = Label(window, text=print_records)
     query_label.grid(row=10, column=0, columnspan=3)
