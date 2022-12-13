@@ -1,14 +1,18 @@
 from tkinter import *
 import mysql.connector
 
+def sql_connect():
+    conn = mysql.connector.connect(
+    host = 'localhost',
+    user = 'root',
+    passwd = 'root',
+    database = 'testdb',
+    )
+    return conn
+
 
 def submin():
-    conn = mysql.connector.connect(
-        host = 'localhost',
-        user = 'root',
-        passwd = 'root',
-        database = 'testdb',
-        )
+    conn = sql_connect()
     c = conn.cursor()
     # c.execute('INSERT INTO address VALUES (:f_name, :l_name, :address, :city, :state, :zipcode)',
     #     {
@@ -41,12 +45,7 @@ def delete():
 
 
 def query():
-    conn = mysql.connector.connect(
-        host = 'localhost',
-        user = 'root',
-        passwd = 'root',
-        database = 'testdb',
-        )
+    conn = sql_connect()
     c = conn.cursor()
     c.execute('SELECT * FROM address')
     records = c.fetchall()
@@ -112,6 +111,7 @@ query_btn.grid(row=7, column=0, columnspan=3, padx=10, pady=10, ipadx=116)
 delete_btn = Button(window, text='Delete', command=delete)
 delete_btn.grid(row=8, column=2, padx=10, pady=10, ipadx=5)
 
+sql_connect()
 
 
 window.mainloop()
